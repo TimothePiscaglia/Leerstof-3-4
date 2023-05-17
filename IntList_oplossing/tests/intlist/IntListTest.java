@@ -7,30 +7,18 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class IntListTest {
 
-    final int[] values = {5,4,3,2,1,8,9,};
     IntList list;
 
     private void addAllValues(){
-        for(final int value : values){
-            list.add(value);
-        }
+        list.add(5);
+        list.add(2);
+        list.add(1);
+        list.add(8);
     }
 
     @BeforeEach
     public void setup(){
         list = new IntList();
-    }
-
-    @Test
-    void remove_WithValuesAdded_AllValuesReturnedInOrder() {
-        // Arrange
-        addAllValues();
-        // Act
-        // Assert
-        for(final int value : values) {  // check if each Integer is removed in the same order as it was added
-            assertEquals(value, list.remove(0));
-        }
-        assertNull(list.remove(0)); // Are there no Integers left behind?
     }
 
     @Test
@@ -49,5 +37,19 @@ class IntListTest {
         final Integer min = list.findMin();
         // Assert
         assertEquals(1, min);
+    }
+
+    @Test
+    void remove_WithValuesAdded_AllValuesReturnedInOrder() {
+        // Arrange
+        addAllValues();
+        // Act
+        // Assert
+        assertEquals(5,list.remove(0));
+        assertEquals(2,list.remove(0));
+        assertEquals(1,list.remove(0));
+        assertEquals(8,list.remove(0));
+
+        assertNull(list.remove(0)); // Are there no Integers left behind?
     }
 }

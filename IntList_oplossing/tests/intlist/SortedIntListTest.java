@@ -6,15 +6,14 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
 class SortedIntListTest {
-/*
-    final int[] values = {5,4,3,2,1,8,9,};
-    final int[] sortedValues = {1,2,3,4,5,8,9,};  //same list but ordered
+
     SortedIntList list;
 
     private void addAllValues(){
-        for(final int value : values){
-            list.add(value);
-        }
+        list.add(5);
+        list.add(2);
+        list.add(1);
+        list.add(8);
     }
 
     @BeforeEach
@@ -24,7 +23,7 @@ class SortedIntListTest {
 
     // Tests zelfde als gewone IntList
     @Test
-    void findMin_OnEmptyList_ReturnsNull() {
+    void findMin_WithoutAddedValues_ReturnsNull() {
         // Act
         final Integer min = list.findMin();
         // Assert
@@ -49,8 +48,11 @@ class SortedIntListTest {
         addAllValues();
         // Act
         // Assert
-
-        //TODO check if the values are removed in the right order (=sortedValues)
+        assertEquals(1,list.remove(0));
+        assertEquals(2,list.remove(0));
+        assertEquals(5,list.remove(0));
+        assertEquals(8,list.remove(0));
+        assertNull(list.remove(0)); // Are there no Integers left behind?
     }
-*/
+
 }

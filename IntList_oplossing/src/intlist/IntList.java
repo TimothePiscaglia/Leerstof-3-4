@@ -31,6 +31,9 @@ public class IntList {
      * @return the smallest element, null if the list is empty
      */
     public Integer findMin(){
+        if(list.isEmpty()){
+            return null;
+        }
         int minimum = Integer.MAX_VALUE; //the largest possible value
         for(final int element: list){
             if(element < minimum){

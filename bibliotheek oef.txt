@@ -1,0 +1,153 @@
+public class BibliotheekController {
+    private Bibliotheek bibliotheek;
+
+    public BibliotheekController(Bibliotheek bibliotheek) {
+        this.bibliotheek = bibliotheek;
+    }
+
+    public void voegBoekToe(String isbn, String naam, String auteur) {
+        bibliotheek.voegBoekToe(new Boek(isbn, naam, auteur));
+    }
+
+public String leenBoekUit(String isbn, String lidNaam) {
+        Boek boek = bibliotheek.vindBoek(isbn);
+        Lid lid = bibliotheek.vindLid(lidNaam);
+
+        if (boek == null || lid == null) {
+            return "Het boek of lid is niet gevonden.";
+        }
+
+        if (bibliotheek.leenBoekUit(boek, lid)) {
+            return "Boek " + isbn + " is succesvol uitgeleend aan " + lidNaam + ".";
+        } else {
+            return "Het boek is momenteel uitgeleend.";
+        }
+    }
+
+    public String leverBoekIn(String isbn) {
+        Boek boek = bibliotheek.vindBoek(isbn);
+
+        if (boek == null) {
+            return "Het boek is niet gevonden.";
+        }
+
+        double kosten = bibliotheek.leverBoekIn(boek);
+
+        if (kosten >= 0) {
+            return "Boek " + isbn + " is succesvol ingeleverd. De kosten zijn €" + kosten + ".";
+        } else {
+            return "Het boek was niet uitgeleend.";
+        }
+    }
+}
+
+
+public class BibliotheekView {
+    private BibliotheekController controller;
+
+    // Invoervelden voor het toevoegen van een boek
+    private TextField isbnVeld;
+    private TextField naamVeld;
+    private TextField auteurVeld;
+    private Button voegBoekToeKnop;
+
+    public BibliotheekView(BibliotheekController controller) {
+        this.controller = controller;
+
+        isbnVeld = new TextField();
+        naamVeld = new TextField();
+        auteurVeld = new TextField();
+        voegBoekToeKnop = new Button("Voeg boek toe");
+
+        voegBoekToeKnop.setOnAction(e -> voegBoekToe());
+
+        this.getChildren().addAll(isbnVeld, naamVeld, auteurVeld, voegBoekToeKnop);
+    }
+
+    private void voegBoekToe() {
+        String isbn = isbnVeld.getText();
+        String naam = naamVeld.getText();
+        String auteur = auteurVeld.getText();
+
+        controller.voegBoekToe(isbn, naam, auteur);
+    }
+}
+
+public class Main {
+    public void start(Stage primaryStage) {
+        Bibliotheek bibliotheek = new Bibliotheek();
+        BibliotheekController controller = new BibliotheekController(bibliotheek);
+        BibliotheekView view = new BibliotheekView(controller);
+
+        Scene scene = new Scene(view, 800, 600);
+        primaryStage.setScene(scene);
+        primaryStage.show();
+    }
+
+    public static void main(String[] args) {
+        launch(args);
+    }
+}
+
+
+
+
+public class BibliotheekView {
+
+    private ToggleGroup boekGroep;
+    private ToggleGroup lidGroep;
+    private Button leenUitKnop;
+    private Button leverInKnop;
+    private TextArea berichtGebied;
+
+    public BibliotheekView(BibliotheekController controller) {
+
+        boekGroep = new ToggleGroup();
+        lidGroep = new ToggleGroup();
+
+        RadioButton boek1 = new RadioButton("Boek 1");
+        boek1.setToggleGroup(boekGroep);
+        RadioButton boek2 = new RadioButton("Boek 2");
+        boek2.setToggleGroup(boekGroep);
+        RadioButton boek3 = new RadioButton("Boek 3");
+        boek3.setToggleGroup(boekGroep);
+
+        RadioButton lid1 = new RadioButton("Lid 1");
+        lid1.setToggleGroup(lidGroep);
+        RadioButton lid2 = new RadioButton("Lid 2");
+        lid2.setToggleGroup(lidGroep);RadioButton lid3 = new RadioButton("Lid 3");
+        lid3.setToggleGroup(lidGroep);
+
+        leenUitKnop = new Button("Leen boek uit");
+        leverInKnop = new Button("Lever boek in");
+        berichtGebied = new TextArea();
+
+        leenUitKnop.setOnAction(e -> leenBoekUit());
+        leverInKnop.setOnAction(e -> leverBoekIn());
+
+        this.getChildren().addAll(boek1, boek2, boek3, lid1, lid2, lid3, leenUitKnop, leverInKnop, berichtGebied);
+    }
+
+    private void leenBoekUit() {
+        RadioButton geselecteerdBoek = (RadioButton) boekGroep.getSelectedToggle();
+        RadioButton geselecteerdLid = (RadioButton) lidGroep.getSelectedToggle();
+
+        if (geselecteerdBoek != null && geselecteerdLid != null) {
+            String bericht = controller.leenBoekUit(geselecteerdBoek.getText(), geselecteerdLid.getText());
+            berichtGebied.setText(bericht);
+        } else {
+            berichtGebied.setText("Selecteer eerst een boek en een lid.");
+        }
+    }
+
+    private void leverBoekIn() {
+        RadioButton geselecteerdBoek = (RadioButton) boekGroep.getSelectedToggle();
+
+        if (geselecteerdBoek != null) {
+            String bericht = controller.leverBoekIn(geselecteerdBoek.getText());
+            berichtGebied.setText(bericht);
+        } else {
+            berichtGebied.setText("Selecteer eerst een boek.");
+        }
+    }
+}
